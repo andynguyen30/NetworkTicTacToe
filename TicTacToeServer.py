@@ -19,9 +19,10 @@ def send_message(msg, clients, conn):
         if client != conn:
             client.send(msg.encode(FORMAT))
 
-def send_client_start(conn, item):
-    # sends clients their starting information (X or O, who's turn is first)
-    conn.send(item.encode(FORMAT))
+def send_client_start(conn, symbol, turn):
+    # Sends clients their starting information (X or O, who's turn is first) combined
+    start_info = f"{symbol}{turn}"
+    conn.send(start_info.encode(FORMAT))
 
 def handle_client(conn, addr, clients):
     # receives messsages from clients and sends to opposite client
@@ -41,26 +42,21 @@ def handle_client(conn, addr, clients):
     conn.close()
 
 def start():
-    # beginning, waits for client connections and calls the function to send the clients their starting information
+    # Waits for client connections and sends them their starting information
     clients = []
     symbols = ['O', 'X']
-    turns = ['0', '1']
+    turns = ['0', '1']  # Assuming the first connected player starts the game
     s.listen(2)
     print(f'Server is listening on {SERVER}')
     while True:
         conn, addr = s.accept()
         clients.append(conn)
-        send_client_start(conn, symbols[0])
-        if len(clients) == 1:
-            send_client_start(conn, turns[0])
+        if len(clients) <= 2:
+            send_client_start(conn, symbols.pop(0), turns.pop(0))
         else:
-            send_client_start(conn, turns[1])
+            print('[ERROR] Too many players')
         t = threading.Thread(target=handle_client, args=(conn, addr, clients))
         t.start()
-        try:
-            del symbols[0]
-        except:
-            print('[ERROR] Too many players')
         print(f"[ACTIVE CONNECTIONS] {threading.active_count() - 1}")
 
  
