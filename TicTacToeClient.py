@@ -163,6 +163,8 @@ def receive():
                 game.set_turn(msg[1])
                 start_game(game)
                 count += 1
+                
+
 
 # create and start thread
 t = threading.Thread(target=receive)
