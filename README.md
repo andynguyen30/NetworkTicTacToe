@@ -1,4 +1,4 @@
-# User Manual:
+# How to Run:
 	
  First the server code file must be run, where it will output the server’s IP, which clients must connect to. 
  Clients will take that IP and set that equal to their SERVER variable. The clients then run their clients. 
